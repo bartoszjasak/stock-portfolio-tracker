@@ -8,13 +8,34 @@ import (
 	"text/template"
 )
 
+const portNumber = ":8081"
+
+type stock struct {
+	Name     string
+	Symbol   string
+	Quantity string
+	Price    string
+	Value    string
+}
+
+type historicalValue struct {
+	Date  []string
+	Value []string
+}
+
+type templateData struct {
+	StockList       []stock
+	HistoricalValue historicalValue
+}
+
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		render(w, "test.page.gohtml")
-	})
+	srv := &http.Server{
+		Addr:    portNumber,
+		Handler: routes(),
+	}
 
 	fmt.Println("Starting front end service on port 8081")
-	err := http.ListenAndServe(":8081", nil)
+	err := srv.ListenAndServe()
 	if err != nil {
 		log.Panic(err)
 	}
@@ -44,13 +65,24 @@ func render(w http.ResponseWriter, t string) {
 		return
 	}
 
-	var data struct {
-		Dates  []string
-		Values []string
-	}
+	var data templateData
+	data.HistoricalValue.Date = []string{"1.12", "2.12", "3.12", "4.12", "5.12"}
+	data.HistoricalValue.Value = []string{"1", "2", "2", "8", "5"}
 
-	data.Dates = []string{"1.12", "2.12", "3.12", "4.12", "5.12"}
-	data.Values = []string{"1", "2", "3", "4", "5"}
+	data.StockList = append(data.StockList, stock{
+		Name:     "Apple Inc.",
+		Symbol:   "AAPL",
+		Quantity: "40",
+		Price:    "143.22",
+		Value:    "5393.84",
+	})
+	data.StockList = append(data.StockList, stock{
+		Name:     "Microsoft Inc.",
+		Symbol:   "MSFT",
+		Quantity: "25",
+		Price:    "250",
+		Value:    "5393.84",
+	})
 
 	if err := tmpl.Execute(w, data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

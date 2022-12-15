@@ -6,6 +6,7 @@
             <div class="col">
                 <h1 class="mt-5">Stocks</h1>
                 <hr>
+                {{$StockList := index .StockList}}
                 <table class="table table-sm">
                     <thead>
                         <tr>
@@ -16,15 +17,17 @@
                         <th scope="col">Value</th>
                         </tr>
                     </thead>
+                    {{range $StockList}}
                     <tbody>
                         <tr>
-                        <td>Apple Inc</td>
-                        <td>AAPL</td>
-                        <td>40</td>
-                        <td>143.22</td>
-                        <td>5393.84</td>
+                        <td>{{.Name}}</td>
+                        <td>{{.Symbol}}</td>
+                        <td>{{.Quantity}}</td>
+                        <td>{{.Price}}</td>
+                        <td>{{.Value}}</td>
                         </tr>
                     </tbody>
+                    {{end}}
                 </table>
             </div>
         </div>
@@ -79,8 +82,8 @@
     <script>
           const ctx = document.getElementById('myChart');
 
-            {{$dates := index .Dates}}
-            {{$values := index .Values}}
+            {{$dates := index .HistoricalValue.Date}}
+            {{$values := index .HistoricalValue.Value}}
             new Chart(ctx, {
                 type: 'line',
                 data: {
