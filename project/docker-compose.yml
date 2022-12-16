@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  portfolio-service:
+    build:
+      context: ./../portfolio-service
+      dockerfile: ./../portfolio-service/portfolio-service.dockerfile
+    restart: always
+    ports: 
+      - "8080:80"
+    deploy:
+      mode: replicated
+      replicas: 1

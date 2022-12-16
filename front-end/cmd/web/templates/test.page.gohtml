@@ -82,8 +82,8 @@
     <script>
           const ctx = document.getElementById('myChart');
 
-            {{$dates := index .HistoricalValue.Date}}
-            {{$values := index .HistoricalValue.Value}}
+            {{$dates := index .HistoricalValue.Dates}}
+            {{$values := index .HistoricalValue.Values}}
             new Chart(ctx, {
                 type: 'line',
                 data: {

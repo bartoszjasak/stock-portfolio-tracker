@@ -19,13 +19,16 @@ type stock struct {
 }
 
 type historicalValue struct {
-	Date  []string
-	Value []string
+	Dates  []string
+	Values []string
 }
 
 type templateData struct {
 	StockList       []stock
 	HistoricalValue historicalValue
+}
+
+type Config struct {
 }
 
 func main() {
