@@ -87,7 +87,7 @@
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                labels: [{{range $dates}}{{.}},{{end}}],
+                labels: [{{range $dates}}'{{.}}',{{end}}],
 
 
                 datasets: [{
