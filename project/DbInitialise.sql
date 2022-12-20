@@ -14,7 +14,7 @@ CREATE TABLE public.transactions (
     id SERIAL PRIMARY KEY,
     type character varying(255),
     symbol character varying(255),
-    price numeric,
+    price real,
     quantity integer NOT null, 
     date timestamp without time zone,
     user_id SERIAL references public.users(id)
