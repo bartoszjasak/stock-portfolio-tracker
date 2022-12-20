@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -12,6 +13,12 @@ import (
 	_ "github.com/jackc/pgx/v4"
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
+
+type PostgreSQL struct {
+	db *sql.DB
+}
+
+const dbTimeout = time.Second * 3
 
 func ConnectToPostgresSQL() (PostgreSQL, error) {
 	fmt.Println("Connectiong to postgreSQL...")
@@ -57,6 +64,37 @@ func openDB(dsn string) (*sql.DB, error) {
 	return db, nil
 }
 
-type PostgreSQL struct {
-	db *sql.DB
+func (p *PostgreSQL) getPortfolioByUserId(userId int) (*Portfolio, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := `SELECT symbol, sum(price*quantity)/sum(quantity), SUM (quantity), sum(price*quantity)
+	FROM public.transactions 
+	where user_id = $1
+	GROUP BY symbol`
+
+	rows, err := p.db.QueryContext(ctx, query, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	var portfolio *Portfolio
+
+	for rows.Next() {
+		var position Position
+		err := rows.Scan(
+			&position.Symbol,
+			&position.Quantity,
+			&position.Price,
+			&position.Value,
+		)
+		if err != nil {
+			log.Println("Error scanning", err)
+			return nil, err
+		}
+
+		portfolio.Positions = append(portfolio.Positions, position)
+	}
+
+	return portfolio, nil
 }

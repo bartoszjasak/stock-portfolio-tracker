@@ -26,4 +26,9 @@ VALUES
 	
    INSERT INTO "public"."transactions"("type","symbol","price","quantity","date","user_id")
 VALUES
+	(E'BUY',E'AAPL', 156.55, 10, E'2022-03-14 00:00:00', 1);
+
+   INSERT INTO "public"."transactions"("type","symbol","price","quantity","date","user_id")
+VALUES
 	(E'BUY',E'MSFT', 246.55, 35, E'2022-03-14 00:00:00', 1);
+	

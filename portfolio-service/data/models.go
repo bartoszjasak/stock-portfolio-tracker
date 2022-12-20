@@ -36,3 +36,14 @@ type Transaction struct {
 	Date     time.Time `json:"date"`
 	UserId   int       `json:"user_id"`
 }
+
+type Portfolio struct {
+	Positions []Position `json:"positions"`
+}
+
+type Position struct {
+	Symbol   string  `json:"symbol"`
+	Quantity int     `json:"quantity"`
+	Price    float32 `json:"price"`
+	Value    float32 `json:"value"`
+}

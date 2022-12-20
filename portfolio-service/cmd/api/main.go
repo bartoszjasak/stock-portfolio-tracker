@@ -10,7 +10,7 @@ import (
 const webPort = "80"
 
 type AppConfig struct {
-	postgreSQL data.PostgreSQL
+	m_postgreSQL data.PostgreSQL
 }
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	app.postgreSQL = postgreSQL
+	app.m_postgreSQL = postgreSQL
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", webPort),
