@@ -16,7 +16,19 @@ type portfolioValueQuote struct {
 
 func (app *AppConfig) GetPortfolioValue(w http.ResponseWriter, r *http.Request) {
 	var response getPortfolioValueResp
-	response.Quotes = scrapeStockHistoricalData()
+	stockHistoricalDatasMap := make(map[string][]portfolioValueQuote)
+	portfolioSymbols := []string{"AAPL", "MSFT"}
+
+	for _, symbol := range portfolioSymbols {
+		stockHistoricalDatasMap[symbol] = scrapeStockHistoricalData(symbol)
+	}
+
+	portfolioHistoricalValuation := make(map[string]string)
+	for symbol, portfolioValueQuoteSlice := range stockHistoricalDatasMap {
+
+	}
+
+	response.Quotes = stockHistoricalDatasMap["AAPL"]
 
 	responseJSON, err := json.Marshal(response)
 	if err != nil {

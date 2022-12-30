@@ -6,9 +6,9 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func scrapeStockHistoricalData() []portfolioValueQuote {
+func scrapeStockHistoricalData(symbol string) []portfolioValueQuote {
 	var ret []portfolioValueQuote
-	scrapeUrl := "https://finance.yahoo.com/quote/AAPL/history?p=AAPL"
+	scrapeUrl := fmt.Sprintf("https://finance.yahoo.com/quote/%s/history?p=%s", symbol, symbol)
 
 	collector := colly.NewCollector(colly.AllowedDomains("finance.yahoo.com", "www.finance.yahoo.com"))
 
