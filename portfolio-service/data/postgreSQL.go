@@ -64,37 +64,38 @@ func openDB(dsn string) (*sql.DB, error) {
 	return db, nil
 }
 
-func (p *PostgreSQL) getPortfolioByUserId(userId int) (*Portfolio, error) {
+func (p *PostgreSQL) GetPortfolioByUserId(userId int) (Portfolio, error) {
+	var portfolio Portfolio
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `SELECT symbol, sum(price*quantity)/sum(quantity), SUM (quantity), sum(price*quantity)
+	query := `SELECT stock_name, symbol, sum(price*quantity)/sum(quantity), SUM (quantity), sum(price*quantity)
 	FROM public.transactions 
 	where user_id = $1
-	GROUP BY symbol`
+	GROUP BY stock_name, symbol`
 
 	rows, err := p.db.QueryContext(ctx, query, userId)
 	if err != nil {
-		return nil, err
+		return portfolio, err
 	}
-
-	var portfolio *Portfolio
 
 	for rows.Next() {
 		var position Position
 		err := rows.Scan(
+			&position.StockName,
 			&position.Symbol,
-			&position.Quantity,
 			&position.Price,
+			&position.Quantity,
 			&position.Value,
 		)
 		if err != nil {
 			log.Println("Error scanning", err)
-			return nil, err
+			return portfolio, err
 		}
 
 		portfolio.Positions = append(portfolio.Positions, position)
 	}
 
+	log.Printf("portfolio: %d", len(portfolio.Positions))
 	return portfolio, nil
 }

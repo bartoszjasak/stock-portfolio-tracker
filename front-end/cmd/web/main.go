@@ -10,21 +10,13 @@ import (
 
 const portNumber = ":8081"
 
-type stock struct {
-	Name     string
-	Symbol   string
-	Quantity string
-	Price    string
-	Value    string
-}
-
 type historicalValue struct {
 	Dates  []string
 	Values []string
 }
 
 type templateData struct {
-	StockList       []stock
+	StockList       []Position
 	HistoricalValue historicalValue
 }
 

@@ -20,6 +20,7 @@ func (app *AppConfig) routes() http.Handler {
 	}))
 
 	mux.Get("/get-portfolio-value", app.GetPortfolioValue)
+	mux.Get("/get-portfolio", app.GetPortfolio)
 
 	return mux
 }

@@ -14,6 +14,18 @@ type portfolioValueQuote struct {
 	Value string `json:"value"`
 }
 
+type getPortfolioResp struct {
+	Positions []Position `json:"positions"`
+}
+
+type Position struct {
+	StockName string  `json:"stock_name"`
+	Symbol    string  `json:"symbol"`
+	Quantity  int     `json:"quantity"`
+	Price     float32 `json:"price"`
+	Value     float32 `json:"value"`
+}
+
 func GetPortfolioValue() (historicalValue, error) {
 	var ret historicalValue
 
@@ -38,4 +50,25 @@ func GetPortfolioValue() (historicalValue, error) {
 	}
 
 	return ret, nil
+}
+
+func GetPortfolio() ([]Position, error) {
+	var stockList []Position
+
+	request, err := http.NewRequest("GET", "http://localhost:8080/get-portfolio", nil)
+	if err != nil {
+		return stockList, err
+	}
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return stockList, err
+	}
+	defer response.Body.Close()
+
+	var portfolio getPortfolioResp
+	json.NewDecoder(response.Body).Decode(&portfolio)
+
+	return portfolio.Positions, nil
 }

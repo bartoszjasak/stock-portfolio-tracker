@@ -28,13 +28,14 @@ type User struct {
 }
 
 type Transaction struct {
-	ID       int       `json:"id"`
-	Type     string    `json:"type"`
-	Symbol   string    `json:"symbol"`
-	Price    float32   `json:"price"`
-	Quantity int       `json:"quantity"`
-	Date     time.Time `json:"date"`
-	UserId   int       `json:"user_id"`
+	ID        int       `json:"id"`
+	Type      string    `json:"type"`
+	StockName string    `json:"stock_name"`
+	Symbol    string    `json:"symbol"`
+	Price     float32   `json:"price"`
+	Quantity  int       `json:"quantity"`
+	Date      time.Time `json:"date"`
+	UserId    int       `json:"user_id"`
 }
 
 type Portfolio struct {
@@ -42,8 +43,9 @@ type Portfolio struct {
 }
 
 type Position struct {
-	Symbol   string  `json:"symbol"`
-	Quantity int     `json:"quantity"`
-	Price    float32 `json:"price"`
-	Value    float32 `json:"value"`
+	StockName string  `json:"stock_name"`
+	Symbol    string  `json:"symbol"`
+	Quantity  int     `json:"quantity"`
+	Price     float32 `json:"price"`
+	Value     float32 `json:"value"`
 }
