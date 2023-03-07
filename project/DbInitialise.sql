@@ -32,4 +32,8 @@ VALUES
    INSERT INTO "public"."transactions"("type", "stock_name","symbol","price","quantity","date","user_id")
 VALUES
 	(E'BUY',E'Microsoft Inc.',E'MSFT', 246.55, 35, E'2022-03-14 00:00:00', 1);
+
+   INSERT INTO "public"."transactions"("type", "stock_name","symbol","price","quantity","date","user_id")
+VALUES
+	(E'BUY',E'Visa Inc.',E'V', 200.25, 12, E'2022-03-14 00:00:00', 1);
 	

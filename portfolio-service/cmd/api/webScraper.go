@@ -19,7 +19,7 @@ func scrapeStockHistoricalData(symbol string) []portfolioValueQuote {
 			date := selection.FindNodes(childNodes[0]).Text()
 			value := selection.FindNodes(childNodes[5]).Text()
 			if date != "Date" {
-				ret = append([]portfolioValueQuote{portfolioValueQuote{
+				ret = append([]portfolioValueQuote{{
 					Date:  date,
 					Value: value,
 				}}, ret...)
