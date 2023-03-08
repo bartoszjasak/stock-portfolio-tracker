@@ -23,16 +23,21 @@ func (app *AppConfig) GetPortfolioValue(w http.ResponseWriter, r *http.Request) 
 	log.Printf("GetPortfolioValue")
 	var response getPortfolioValueResp
 	portfolioTimestampToValueMap := make(map[int64]float32)
-	portfolioSymbols := []string{"AAPL", "MSFT"}
 
-	for _, symbol := range portfolioSymbols {
-		stockPriceHistory := getStockPriceHistory(symbol, time.Now().AddDate(0, -4, 0), time.Now())
+	var portfolio data.Portfolio
+	portfolio, err := app.m_postgreSQL.GetPortfolioByUserId(1)
+	if err != nil {
+		return
+	}
+
+	for _, position := range portfolio.Positions {
+		stockPriceHistory := getStockPriceHistory(position.Symbol, time.Now().AddDate(-1, 0, 0), time.Now())
 		for _, stockQuote := range stockPriceHistory.Results {
 			val, ok := portfolioTimestampToValueMap[stockQuote.Timestamp]
 			if ok {
-				portfolioTimestampToValueMap[stockQuote.Timestamp] = val + stockQuote.Close
+				portfolioTimestampToValueMap[stockQuote.Timestamp] = val + stockQuote.Close*float32(position.Quantity)
 			} else {
-				portfolioTimestampToValueMap[stockQuote.Timestamp] = stockQuote.Close
+				portfolioTimestampToValueMap[stockQuote.Timestamp] = stockQuote.Close * float32(position.Quantity)
 			}
 		}
 	}
