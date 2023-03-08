@@ -30,6 +30,9 @@ func (app *AppConfig) GetPortfolioValue(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	transactions, err := app.m_postgreSQL.GetTransactionHostoryByUserId(1)
+	log.Println(transactions)
+
 	for _, position := range portfolio.Positions {
 		stockPriceHistory := getStockPriceHistory(position.Symbol, time.Now().AddDate(-1, 0, 0), time.Now())
 		for _, stockQuote := range stockPriceHistory.Results {

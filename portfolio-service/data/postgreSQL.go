@@ -89,7 +89,7 @@ func (p *PostgreSQL) GetPortfolioByUserId(userId int) (Portfolio, error) {
 			&position.Value,
 		)
 		if err != nil {
-			log.Println("Error scanning", err)
+			log.Fatal("Error scanning", err)
 			return portfolio, err
 		}
 
@@ -98,4 +98,42 @@ func (p *PostgreSQL) GetPortfolioByUserId(userId int) (Portfolio, error) {
 
 	log.Printf("portfolio: %d", len(portfolio.Positions))
 	return portfolio, nil
+}
+
+func (p *PostgreSQL) GetTransactionHostoryByUserId(userId int) ([]Transaction, error) {
+	var transactions []Transaction
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := `SELECT id, type, stock_name, symbol, price, quantity, date, user_id
+					  FROM public.transactions 
+					  WHERE user_id = $1
+						ORDER BY date ASC`
+
+	rows, err := p.db.QueryContext(ctx, query, userId)
+	if err != nil {
+		log.Fatal("Query error", err)
+		return transactions, err
+	}
+
+	for rows.Next() {
+		var transaction Transaction
+		err := rows.Scan(
+			&transaction.ID,
+			&transaction.Type,
+			&transaction.StockName,
+			&transaction.Symbol,
+			&transaction.Price,
+			&transaction.Quantity,
+			&transaction.Date,
+			&transaction.UserId,
+		)
+		if err != nil {
+			log.Fatal("Error scanning getTransactionHostoryByUserId response")
+			return transactions, err
+		}
+		transactions = append(transactions, transaction)
+	}
+
+	return transactions, nil
 }
