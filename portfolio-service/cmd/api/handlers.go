@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"portfolio-service/data"
+	"sort"
 	"time"
 )
 
@@ -21,21 +22,35 @@ type portfolioValueQuote struct {
 func (app *AppConfig) GetPortfolioValue(w http.ResponseWriter, r *http.Request) {
 	log.Printf("GetPortfolioValue")
 	var response getPortfolioValueResp
-	stockHistoricalDatasMap := make(map[string][]portfolioValueQuote)
+	portfolioTimestampToValueMap := make(map[int64]float32)
 	portfolioSymbols := []string{"AAPL", "MSFT"}
 
 	for _, symbol := range portfolioSymbols {
-		history := getStockPriceHistory(symbol, time.Now().AddDate(0, -1, 0), time.Now())
-		stockHistoricalDatasMap[symbol] = scrapeStockHistoricalData(symbol)
+		stockPriceHistory := getStockPriceHistory(symbol, time.Now().AddDate(0, -4, 0), time.Now())
+		for _, stockQuote := range stockPriceHistory.Results {
+			val, ok := portfolioTimestampToValueMap[stockQuote.Timestamp]
+			if ok {
+				portfolioTimestampToValueMap[stockQuote.Timestamp] = val + stockQuote.Close
+			} else {
+				portfolioTimestampToValueMap[stockQuote.Timestamp] = stockQuote.Close
+			}
+		}
 	}
 
-	// portfolioHistoricalValuation := make(map[string]string)
-	// for symbol, quoteSlice := range stockHistoricalDatasMap {
-	// 	for _, quote
-	// 	portfolioHistoricalValuation[portfolioValueQuoteSlice] =
-	// }
-
-	response.Quotes = stockHistoricalDatasMap["AAPL"]
+	keys := make([]int64, 0, len(portfolioTimestampToValueMap))
+	for key := range portfolioTimestampToValueMap {
+		keys = append(keys, key)
+	}
+	sort.SliceStable(keys, func(i, j int) bool {
+		return keys[i] < keys[j]
+	})
+	for _, key := range keys {
+		time := time.Unix(key/1000, 0)
+		response.Quotes = append(response.Quotes, portfolioValueQuote{
+			Date:  time.Format("2006-01-02"),
+			Value: fmt.Sprintf("%f", portfolioTimestampToValueMap[key]),
+		})
+	}
 
 	responseJSON, err := json.Marshal(response)
 	if err != nil {
