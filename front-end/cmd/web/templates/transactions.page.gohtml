@@ -1,0 +1,41 @@
+{{template "base" .}}
+
+{{define "content" }}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="mt-5">Transaction history</h1>
+                <hr>
+                {{$TransactionHistory := index .TransactionHistory}}
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                        <th scope="col">Product</th>
+                        <th scope="col">Symbol</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Value</th>
+                        <th scope="col">Date</th>
+                        </tr>
+                    </thead>
+                    {{range $TransactionHistory}}
+                    <tbody>
+                        <tr>
+                        <td>{{.StockName}}</td>
+                        <td>{{.Symbol}}</td>
+                        <td>{{.Quantity}}</td>
+                        <td>{{.Price}}</td>
+                        <td>{{.Value}}</td>
+                        </tr>
+                    </tbody>
+                    {{end}}
+                </table>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+
+{{end}}

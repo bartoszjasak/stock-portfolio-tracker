@@ -19,8 +19,8 @@ func (app *AppConfig) routes() http.Handler {
 		MaxAge:           300,
 	}))
 
-	mux.Get("/get-portfolio-value", app.GetPortfolioValue)
-	mux.Get("/get-portfolio", app.GetPortfolio)
+	mux.Get("/portfolio-value", app.GetPortfolioValue)
+	mux.Get("/portfolio", app.GetPortfolio)
 
 	return mux
 }

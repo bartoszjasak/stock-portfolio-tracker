@@ -15,9 +15,10 @@ type historicalValue struct {
 	Values []string
 }
 
-type templateData struct {
-	StockList       []Position
-	HistoricalValue historicalValue
+type TemplateData struct {
+	StockList          []Position
+	HistoricalValue    historicalValue
+	TransactionHistory []Transaction
 }
 
 type Config struct {
@@ -39,7 +40,7 @@ func main() {
 //go:embed templates
 var templateFS embed.FS
 
-func render(w http.ResponseWriter, t string, data templateData) {
+func render(w http.ResponseWriter, t string, data TemplateData) {
 
 	partials := []string{
 		"templates/base.layout.gohtml",

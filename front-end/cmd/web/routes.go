@@ -10,6 +10,7 @@ func routes() http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Get("/", Home)
+	mux.Get("/transactions", Transactions)
 
 	return mux
 }

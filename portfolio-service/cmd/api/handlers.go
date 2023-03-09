@@ -31,16 +31,20 @@ func (app *AppConfig) GetPortfolioValue(w http.ResponseWriter, r *http.Request) 
 	}
 
 	transactions, err := app.m_postgreSQL.GetTransactionHostoryByUserId(1)
+	if err != nil {
+		return
+	}
 	log.Println(transactions)
 
 	for _, position := range portfolio.Positions {
 		stockPriceHistory := getStockPriceHistory(position.Symbol, time.Now().AddDate(-1, 0, 0), time.Now())
 		for _, stockQuote := range stockPriceHistory.Results {
 			val, ok := portfolioTimestampToValueMap[stockQuote.Timestamp]
+			time := time.Unix(stockQuote.Timestamp/1000, 0)
 			if ok {
-				portfolioTimestampToValueMap[stockQuote.Timestamp] = val + stockQuote.Close*float32(position.Quantity)
+				portfolioTimestampToValueMap[stockQuote.Timestamp] = val + stockQuote.Close*float32(GetQuantityByDate(time, position.Symbol, transactions))
 			} else {
-				portfolioTimestampToValueMap[stockQuote.Timestamp] = stockQuote.Close * float32(position.Quantity)
+				portfolioTimestampToValueMap[stockQuote.Timestamp] = stockQuote.Close * float32(GetQuantityByDate(time, position.Symbol, transactions))
 			}
 		}
 	}
