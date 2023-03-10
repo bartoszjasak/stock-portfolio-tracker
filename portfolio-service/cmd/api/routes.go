@@ -21,6 +21,7 @@ func (app *AppConfig) routes() http.Handler {
 
 	mux.Get("/portfolio-value", app.GetPortfolioValue)
 	mux.Get("/portfolio", app.GetPortfolio)
+	mux.Get("/transaction-history", app.GetTransactionHistory)
 
 	return mux
 }

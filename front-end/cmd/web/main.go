@@ -55,13 +55,21 @@ func render(w http.ResponseWriter, t string, data TemplateData) {
 		templateSlice = append(templateSlice, x)
 	}
 
-	tmpl, err := template.ParseFS(templateFS, templateSlice...)
+	tmpl := template.New("")
+
+	tmpl = tmpl.Funcs(template.FuncMap{"mul": Mul})
+
+	tmpl, err := tmpl.ParseFS(templateFS, templateSlice...)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if err := tmpl.Execute(w, data); err != nil {
+	if err := tmpl.ExecuteTemplate(w, t, data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func Mul(param1 int, param2 float32) float32 {
+	return (float32)(param1) * param2
 }

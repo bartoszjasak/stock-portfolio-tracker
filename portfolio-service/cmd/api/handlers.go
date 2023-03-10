@@ -14,6 +14,10 @@ type getPortfolioValueResp struct {
 	Quotes []portfolioValueQuote `json:"quote"`
 }
 
+type GetTransactionHistoryResp struct {
+	Transactions []data.Transaction `json:"transactions"`
+}
+
 type portfolioValueQuote struct {
 	Date  string `json:"date"`
 	Value string `json:"value"`
@@ -34,7 +38,6 @@ func (app *AppConfig) GetPortfolioValue(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		return
 	}
-	log.Println(transactions)
 
 	for _, position := range portfolio.Positions {
 		stockPriceHistory := getStockPriceHistory(position.Symbol, time.Now().AddDate(-1, 0, 0), time.Now())
@@ -95,6 +98,30 @@ func (app *AppConfig) GetPortfolio(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
 	_, err = w.Write(responseJSON)
+	if err != nil {
+		return
+	}
+}
+
+func (app *AppConfig) GetTransactionHistory(w http.ResponseWriter, r *http.Request) {
+	log.Printf("GetTransactionHistory")
+	var resp GetTransactionHistoryResp
+
+	transactions, err := app.m_postgreSQL.GetTransactionHostoryByUserId(1)
+	if err != nil {
+		return
+	}
+	resp.Transactions = transactions
+
+	respJSON, err := json.Marshal(resp)
+	if err != nil {
+		log.Fatal("Unable to marshal GetTransactionHistoryResp JSON")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
+	_, err = w.Write(respJSON)
 	if err != nil {
 		return
 	}

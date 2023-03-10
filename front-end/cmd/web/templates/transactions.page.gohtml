@@ -24,9 +24,11 @@
                         <tr>
                         <td>{{.StockName}}</td>
                         <td>{{.Symbol}}</td>
-                        <td>{{.Quantity}}</td>
+                        <td>{{.Type}}</td>
                         <td>{{.Price}}</td>
-                        <td>{{.Value}}</td>
+                        <td>{{.Quantity}}</td>
+                        <td>{{mul .Quantity .Price}}</td>
+                        <td>{{.Date.Format "02-01-2006"}}</td>
                         </tr>
                     </tbody>
                     {{end}}
