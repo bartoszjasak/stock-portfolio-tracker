@@ -40,6 +40,9 @@ func (app *AppConfig) GetPortfolioValue(w http.ResponseWriter, r *http.Request) 
 	}
 
 	for _, position := range portfolio.Positions {
+		resp := getStockDividendHistory(position.Symbol, time.Now().AddDate(-1, 0, 0), time.Now())
+		log.Println(resp)
+
 		stockPriceHistory := getStockPriceHistory(position.Symbol, time.Now().AddDate(-1, 0, 0), time.Now())
 		for _, stockQuote := range stockPriceHistory.Results {
 			val, ok := portfolioTimestampToValueMap[stockQuote.Timestamp]
